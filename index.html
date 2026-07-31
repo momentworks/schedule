@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>모먼트웍스 예약일정관리</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+  :root{
+    --bg: #100e0c;
+    --bg-panel: #17140f;
+    --bg-card: #1d1913;
+    --gold: #c9a24b;
+    --gold-soft: #e6c987;
+    --line: #33291c;
+    --text: #ede7da;
+    --text-dim: #9d9384;
+    --danger: #a8543f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background: radial-gradient(circle at 50% 0%, #1b1712 0%, #100e0c 55%);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+  }
+  .wrap{ max-width: 900px; margin: 0 auto; }
+
+  header.top{
+    text-align:center;
+    margin-bottom: 36px;
+  }
+  .eyebrow{
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h1{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 40px;
+    letter-spacing: 1px;
+    color: var(--gold-soft);
+  }
+  .sub{ color: var(--text-dim); font-size: 13px; margin-top: 6px; }
+
+  .panel{
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 28px;
+  }
+
+  .cal-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom: 20px;
+  }
+  .cal-head .month-label{
+    font-family:'Cormorant Garamond', serif;
+    font-size: 26px;
+    color: var(--gold-soft);
+    letter-spacing: 1px;
+  }
+  .nav-btn{
+    background:none; border:1px solid var(--line); color: var(--gold);
+    width:34px; height:34px; border-radius:50%; cursor:pointer;
+    font-size:16px; transition: all .15s;
+  }
+  .nav-btn:hover{ border-color: var(--gold); background: rgba(201,162,75,0.08); }
+
+  .weekdays, .grid{
+    display:grid; grid-template-columns: repeat(7, 1fr);
+  }
+  .weekdays div{
+    text-align:center; font-size:12px; color: var(--text-dim);
+    padding-bottom: 8px; letter-spacing: 1px;
+  }
+  .weekdays div:first-child{ color:#b5654f; }
+  .weekdays div:last-child{ color:#5f88b0; }
+
+  .day-cell{
+    aspect-ratio: 1;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: background .15s, border-color .15s;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .day-cell.empty{ cursor:default; }
+  .day-cell:not(.empty):hover{ background: rgba(201,162,75,0.06); border-color: var(--line); }
+  .day-cell .num{ font-size: 13px; color: var(--text); }
+  .day-cell.today .num{ color: var(--gold-soft); font-weight:700; }
+  .day-cell.selected{ border-color: var(--gold); background: rgba(201,162,75,0.1); }
+  .dot-row{ display:flex; gap:3px; margin-top:4px; flex-wrap:wrap; justify-content:center; }
+  .dot{ width:5px; height:5px; border-radius:50%; background: var(--gold); }
+
+  .add-form{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  .add-form .full{ grid-column: 1 / -1; }
+  label{ font-size:11px; color: var(--text-dim); letter-spacing:1px; display:block; margin-bottom:5px; }
+  input, textarea{
+    width:100%; background: var(--bg-card); border:1px solid var(--line);
+    color: var(--text); padding: 10px 12px; border-radius: 3px; font-size:14px;
+    font-family:inherit;
+  }
+  input:focus, textarea:focus{ outline:none; border-color: var(--gold); }
+  textarea{ resize: vertical; min-height: 46px; }
+
+  .btn{
+    border:none; border-radius: 3px; padding: 11px 20px; cursor:pointer;
+    font-size: 13px; letter-spacing: 1px; font-weight:600; transition: opacity .15s;
+  }
+  .btn:hover{ opacity:0.85; }
+  .btn-gold{ background: linear-gradient(135deg, var(--gold-soft), var(--gold)); color:#171310; }
+  .btn-ghost{ background:none; border:1px solid var(--line); color: var(--text-dim); }
+  .btn-danger{ background:none; border:1px solid var(--danger); color: var(--danger); }
+
+  .list-head{
+    display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 18px;
+  }
+  .list-head h2{
+    font-family:'Cormorant Garamond', serif; font-size:22px; color: var(--gold-soft); letter-spacing:1px;
+  }
+  .list-head .filter-clear{ font-size:12px; color: var(--gold); cursor:pointer; }
+
+  .date-group{ margin-bottom: 18px; }
+  .date-group .date-label{
+    font-size: 12px; color: var(--gold); letter-spacing: 1.5px; margin-bottom: 8px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--line);
+  }
+  .item{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    background: var(--bg-card); border:1px solid var(--line); border-radius:3px;
+    padding: 14px 16px; margin-bottom: 8px;
+  }
+  .item .time{ color: var(--gold-soft); font-weight:600; font-size:14px; min-width:56px; }
+  .item .info{ flex:1; margin-left:14px; }
+  .item .info .name{ font-size:15px; font-weight:600; }
+  .item .info .meta{ font-size:12px; color: var(--text-dim); margin-top:3px; }
+  .item .actions{ display:flex; gap:8px; }
+  .item .actions button{
+    background:none; border:none; color: var(--text-dim); cursor:pointer; font-size:12px;
+  }
+  .item .actions button:hover{ color: var(--gold); }
+  .item .actions button.del:hover{ color: var(--danger); }
+
+  .empty-state{
+    text-align:center; color: var(--text-dim); font-size:13px; padding: 30px 0;
+  }
+  .status{ text-align:center; font-size:11px; color: var(--text-dim); margin-top: -10px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">MOMENT WORKS</div>
+    <h1>예약일정관리</h1>
+    <div class="sub">축의대 예약 및 예식 일정을 한눈에 확인하세요</div>
+  </header>
+
+  <div class="status" id="status">불러오는 중...</div>
+
+  <div class="panel">
+    <div class="cal-head">
+      <button class="nav-btn" id="prevBtn">‹</button>
+      <div class="month-label" id="monthLabel"></div>
+      <button class="nav-btn" id="nextBtn">›</button>
+    </div>
+    <div class="weekdays">
+      <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+    </div>
+    <div class="grid" id="calGrid"></div>
+
+    <div class="add-form">
+      <div>
+        <label>예식일자</label>
+        <input type="date" id="f-date">
+      </div>
+      <div>
+        <label>예식시간</label>
+        <input type="time" id="f-time">
+      </div>
+      <div>
+        <label>신랑 · 신부</label>
+        <input type="text" id="f-name" placeholder="예: 김민수 · 이서연">
+      </div>
+      <div>
+        <label>예식장</label>
+        <input type="text" id="f-venue" placeholder="예: 더채플 앳 청담">
+      </div>
+      <div class="full">
+        <label>메모</label>
+        <textarea id="f-memo" placeholder="인원, 준비물, 특이사항 등"></textarea>
+      </div>
+      <div class="full" style="display:flex; gap:10px; justify-content:flex-end;">
+        <button class="btn btn-ghost" id="cancelEditBtn" style="display:none;">취소</button>
+        <button class="btn btn-gold" id="saveBtn">일정 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="list-head">
+      <h2>전체 일정 (날짜·시간순)</h2>
+      <div class="filter-clear" id="clearFilter" style="display:none;">필터 해제 ✕</div>
+    </div>
+    <div id="listArea"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ▼▼▼ 여기 두 값만 본인 Supabase 프로젝트 값으로 교체하세요 ▼▼▼
+const SUPABASE_URL = 'https://jpqisppqbsqdlyjvkbic.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_J62N4rw8GVAzjF8rCv8ezA_CHbPh6Je';
+// ▲▲▲ 여기까지 ▲▲▲
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let schedules = [];
+let currentMonth = new Date();
+let selectedDate = null;
+let editingId = null;
+
+function fmtDateLabel(dateStr){
+  const d = new Date(dateStr + 'T00:00:00');
+  const days = ['일','월','화','수','목','금','토'];
+  return `${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+}
+
+async function loadSchedules(){
+  document.getElementById('status').textContent = '불러오는 중...';
+  const { data, error } = await db
+    .from('schedules')
+    .select('*')
+    .order('date', { ascending: true })
+    .order('time', { ascending: true });
+
+  if(error){
+    document.getElementById('status').textContent = '불러오기 실패: ' + error.message;
+    schedules = [];
+  } else {
+    schedules = data || [];
+    document.getElementById('status').textContent = '어디서든 이 주소로 접속하면 같은 일정을 보고 저장합니다';
+  }
+  render();
+}
+
+function render(){
+  renderCalendar();
+  renderList();
+}
+
+function renderCalendar(){
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+  document.getElementById('monthLabel').textContent = `${year}년 ${month+1}월`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const todayStr = new Date().toISOString().slice(0,10);
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  for(let i=0;i<firstDay;i++){
+    const cell = document.createElement('div');
+    cell.className = 'day-cell empty';
+    grid.appendChild(cell);
+  }
+
+  for(let day=1; day<=daysInMonth; day++){
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const cell = document.createElement('div');
+    cell.className = 'day-cell';
+    if(dateStr === todayStr) cell.classList.add('today');
+    if(dateStr === selectedDate) cell.classList.add('selected');
+
+    const dayItems = schedules.filter(s => s.date === dateStr);
+    cell.innerHTML = `<div class="num">${day}</div>` +
+      (dayItems.length ? `<div class="dot-row">${dayItems.slice(0,4).map(()=>'<div class="dot"></div>').join('')}</div>` : '');
+
+    cell.addEventListener('click', () => {
+      selectedDate = (selectedDate === dateStr) ? null : dateStr;
+      if(selectedDate) document.getElementById('f-date').value = selectedDate;
+      render();
+    });
+    grid.appendChild(cell);
+  }
+}
+
+function renderList(){
+  const listArea = document.getElementById('listArea');
+  const clearFilter = document.getElementById('clearFilter');
+  clearFilter.style.display = selectedDate ? 'block' : 'none';
+
+  let data = [...schedules];
+  if(selectedDate) data = data.filter(s => s.date === selectedDate);
+  data.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+
+  if(data.length === 0){
+    listArea.innerHTML = `<div class="empty-state">등록된 일정이 없습니다.</div>`;
+    return;
+  }
+
+  const groups = {};
+  data.forEach(s => {
+    if(!groups[s.date]) groups[s.date] = [];
+    groups[s.date].push(s);
+  });
+
+  listArea.innerHTML = '';
+  Object.keys(groups).sort().forEach(dateStr => {
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'date-group';
+    groupDiv.innerHTML = `<div class="date-label">${fmtDateLabel(dateStr)}</div>`;
+
+    groups[dateStr].forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.innerHTML = `
+        <div class="time">${item.time || '--:--'}</div>
+        <div class="info">
+          <div class="name">${escapeHtml(item.name || '(이름 미입력)')}</div>
+          <div class="meta">${escapeHtml(item.venue || '')}${item.memo ? ' · ' + escapeHtml(item.memo) : ''}</div>
+        </div>
+        <div class="actions">
+          <button class="edit">수정</button>
+          <button class="del">삭제</button>
+        </div>
+      `;
+      el.querySelector('.edit').addEventListener('click', () => startEdit(item.id));
+      el.querySelector('.del').addEventListener('click', () => deleteItem(item.id));
+      groupDiv.appendChild(el);
+    });
+    listArea.appendChild(groupDiv);
+  });
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function startEdit(id){
+  const item = schedules.find(s => s.id === id);
+  if(!item) return;
+  editingId = id;
+  document.getElementById('f-date').value = item.date;
+  document.getElementById('f-time').value = item.time;
+  document.getElementById('f-name').value = item.name;
+  document.getElementById('f-venue').value = item.venue;
+  document.getElementById('f-memo').value = item.memo;
+  document.getElementById('saveBtn').textContent = '수정 완료';
+  document.getElementById('cancelEditBtn').style.display = 'inline-block';
+  window.scrollTo({top: document.querySelector('.panel').offsetTop - 20, behavior:'smooth'});
+}
+
+function resetForm(){
+  editingId = null;
+  document.getElementById('f-date').value = '';
+  document.getElementById('f-time').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-venue').value = '';
+  document.getElementById('f-memo').value = '';
+  document.getElementById('saveBtn').textContent = '일정 저장';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+}
+
+async function deleteItem(id){
+  if(!confirm('이 일정을 삭제할까요?')) return;
+  const { error } = await db.from('schedules').delete().eq('id', id);
+  if(error){ alert('삭제 실패: ' + error.message); return; }
+  await loadSchedules();
+}
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  const date = document.getElementById('f-date').value;
+  const time = document.getElementById('f-time').value;
+  const name = document.getElementById('f-name').value.trim();
+  const venue = document.getElementById('f-venue').value.trim();
+  const memo = document.getElementById('f-memo').value.trim();
+
+  if(!date){ alert('예식일자를 입력해주세요.'); return; }
+
+  let error;
+  if(editingId){
+    ({ error } = await db.from('schedules').update({date, time, name, venue, memo}).eq('id', editingId));
+  } else {
+    ({ error } = await db.from('schedules').insert({date, time, name, venue, memo}));
+  }
+  if(error){ alert('저장 실패: ' + error.message); return; }
+
+  resetForm();
+  await loadSchedules();
+});
+
+document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+document.getElementById('clearFilter').addEventListener('click', () => { selectedDate = null; render(); });
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  currentMonth.setMonth(currentMonth.getMonth() - 1);
+  render();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  currentMonth.setMonth(currentMonth.getMonth() + 1);
+  render();
+});
+
+loadSchedules();
+</script>
+</body>
+</html>
