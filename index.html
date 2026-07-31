@@ -17,6 +17,8 @@
     --text: #ede7da;
     --text-dim: #9d9384;
     --danger: #a8543f;
+    --open: #6d9077;
+    --wait: #7a93b0;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
@@ -26,141 +28,122 @@
     min-height: 100vh;
     padding: 40px 20px 80px;
   }
-  .wrap{ max-width: 900px; margin: 0 auto; }
+  .wrap{ max-width: 920px; margin: 0 auto; }
 
-  header.top{
-    text-align:center;
-    margin-bottom: 36px;
-  }
-  .eyebrow{
-    font-size: 12px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  h1{
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: 40px;
-    letter-spacing: 1px;
-    color: var(--gold-soft);
-  }
+  header.top{ text-align:center; margin-bottom: 32px; }
+  .eyebrow{ font-size: 12px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+  h1{ font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 38px; letter-spacing: 1px; color: var(--gold-soft); }
   .sub{ color: var(--text-dim); font-size: 13px; margin-top: 6px; }
 
-  .panel{
-    background: var(--bg-panel);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: 28px;
-    margin-bottom: 28px;
-  }
+  .panel{ background: var(--bg-panel); border: 1px solid var(--line); border-radius: 4px; padding: 26px; margin-bottom: 24px; }
 
-  .cal-head{
-    display:flex; align-items:center; justify-content:space-between;
-    margin-bottom: 20px;
-  }
-  .cal-head .month-label{
-    font-family:'Cormorant Garamond', serif;
-    font-size: 26px;
-    color: var(--gold-soft);
-    letter-spacing: 1px;
-  }
-  .nav-btn{
-    background:none; border:1px solid var(--line); color: var(--gold);
-    width:34px; height:34px; border-radius:50%; cursor:pointer;
-    font-size:16px; transition: all .15s;
-  }
+  .cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px; }
+  .cal-head .month-label{ font-family:'Cormorant Garamond', serif; font-size: 25px; color: var(--gold-soft); letter-spacing: 1px; }
+  .nav-btn{ background:none; border:1px solid var(--line); color: var(--gold); width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:16px; }
   .nav-btn:hover{ border-color: var(--gold); background: rgba(201,162,75,0.08); }
 
-  .weekdays, .grid{
-    display:grid; grid-template-columns: repeat(7, 1fr);
-  }
-  .weekdays div{
-    text-align:center; font-size:12px; color: var(--text-dim);
-    padding-bottom: 8px; letter-spacing: 1px;
-  }
-  .weekdays div:first-child{ color:#b5654f; }
-  .weekdays div:last-child{ color:#5f88b0; }
+  .legend{ display:flex; gap:16px; font-size:11px; color:var(--text-dim); margin-bottom:14px; flex-wrap:wrap; }
+  .legend span{ display:flex; align-items:center; gap:5px; }
+  .swatch{ width:10px; height:10px; border-radius:2px; display:inline-block; }
+  .swatch.closed{ background: linear-gradient(135deg, var(--gold-soft), var(--gold)); }
+  .swatch.open{ border:1px dashed var(--line); }
+  .swatch.wait{ background: var(--wait); }
 
-  .day-cell{
-    aspect-ratio: 1;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    padding: 6px;
-    cursor: pointer;
-    position: relative;
-    transition: background .15s, border-color .15s;
-    display:flex; flex-direction:column; align-items:center;
-  }
+  .weekdays, .grid{ display:grid; grid-template-columns: repeat(7, 1fr); gap:5px; }
+  .weekdays{ margin-bottom:6px; }
+  .weekdays div{ text-align:center; font-size:11px; color: var(--text-dim); padding-bottom: 4px; letter-spacing: 1px; }
+  .weekdays div:nth-child(1){ color:#b5654f; }
+  .weekdays div:nth-child(7){ color:#5f88b0; }
+
+  .day-cell{ border-radius:4px; cursor:pointer; position:relative; border:1px solid transparent; }
   .day-cell.empty{ cursor:default; }
-  .day-cell:not(.empty):hover{ background: rgba(201,162,75,0.06); border-color: var(--line); }
-  .day-cell .num{ font-size: 13px; color: var(--text); }
-  .day-cell.today .num{ color: var(--gold-soft); font-weight:700; }
-  .day-cell.selected{ border-color: var(--gold); background: rgba(201,162,75,0.1); }
-  .dot-row{ display:flex; gap:3px; margin-top:4px; flex-wrap:wrap; justify-content:center; }
-  .dot{ width:5px; height:5px; border-radius:50%; background: var(--gold); }
+  .day-cell.today{ box-shadow: inset 0 0 0 1px var(--gold); }
 
-  .add-form{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 22px;
-    padding-top: 22px;
-    border-top: 1px solid var(--line);
+  .day-cell.weekday-cell{
+    min-height: 44px; opacity:0.75; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    background: rgba(255,255,255,0.015);
   }
+  .day-cell.weekday-cell:hover{ opacity:1; background: rgba(201,162,75,0.06); }
+  .day-cell.weekday-cell .num{ font-size:12px; color: var(--text-dim); }
+  .day-cell.weekday-cell.today .num{ color: var(--gold-soft); font-weight:700; }
+  .mini-dots{ display:flex; gap:3px; }
+  .mini-dot{ width:6px; height:6px; border-radius:2px; background: rgba(255,255,255,0.08); }
+  .mini-dot.closed{ background: var(--gold); }
+
+  .day-cell.weekend-cell{
+    min-height: 90px; border:1px solid var(--line); padding:5px; display:flex; flex-direction:column; gap:4px;
+  }
+  .day-cell.weekend-cell:hover{ border-color: var(--gold); }
+  .day-cell.weekend-cell .num{ font-size:12px; text-align:right; color: var(--text-dim); padding-right:2px; }
+  .day-cell.weekend-cell.sat .num{ color:#5f88b0; }
+  .day-cell.weekend-cell.sun .num{ color:#b5654f; }
+  .day-cell.weekend-cell.today .num{ color: var(--gold-soft); font-weight:700; }
+
+  .session-bar{
+    flex:1; border-radius:3px; font-size:10px; line-height:1.25; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:3px 2px; gap:1px;
+  }
+  .session-bar .s-label{ font-weight:700; letter-spacing:0.5px; }
+  .session-bar .s-region{ font-size:9px; opacity:0.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+  .session-bar.closed{ background: linear-gradient(135deg, var(--gold-soft), var(--gold)); color:#171310; }
+  .session-bar.open{ background: rgba(255,255,255,0.025); border:1px dashed var(--line); color: var(--text-dim); }
+
+  .add-form{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .add-form .full{ grid-column: 1 / -1; }
-  label{ font-size:11px; color: var(--text-dim); letter-spacing:1px; display:block; margin-bottom:5px; }
-  input, textarea{
-    width:100%; background: var(--bg-card); border:1px solid var(--line);
-    color: var(--text); padding: 10px 12px; border-radius: 3px; font-size:14px;
-    font-family:inherit;
-  }
-  input:focus, textarea:focus{ outline:none; border-color: var(--gold); }
-  textarea{ resize: vertical; min-height: 46px; }
+  label{ font-size:11px; color: var(--text-dim); letter-spacing:1px; display:block; margin-bottom:6px; }
+  input{ width:100%; background: var(--bg-card); border:1px solid var(--line); color: var(--text); padding: 10px 12px; border-radius: 3px; font-size:14px; font-family:inherit; }
+  input:focus{ outline:none; border-color: var(--gold); }
 
-  .btn{
-    border:none; border-radius: 3px; padding: 11px 20px; cursor:pointer;
-    font-size: 13px; letter-spacing: 1px; font-weight:600; transition: opacity .15s;
+  .toggle-group{ display:flex; gap:8px; }
+  .toggle-btn{
+    flex:1; padding:10px; text-align:center; border:1px solid var(--line); border-radius:3px; cursor:pointer;
+    color: var(--text-dim); font-size:13px; letter-spacing:1px; background: var(--bg-card);
   }
+  .toggle-btn.active{ background: linear-gradient(135deg, var(--gold-soft), var(--gold)); color:#171310; font-weight:700; border-color: var(--gold); }
+  .toggle-btn.active.wait-active{ background: var(--wait); color:#12161c; border-color: var(--wait); }
+
+  .btn{ border:none; border-radius: 3px; padding: 11px 20px; cursor:pointer; font-size: 13px; letter-spacing: 1px; font-weight:600; }
   .btn:hover{ opacity:0.85; }
   .btn-gold{ background: linear-gradient(135deg, var(--gold-soft), var(--gold)); color:#171310; }
   .btn-ghost{ background:none; border:1px solid var(--line); color: var(--text-dim); }
   .btn-danger{ background:none; border:1px solid var(--danger); color: var(--danger); }
+  .btn-small{ padding:6px 12px; font-size:11px; }
+  .form-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:6px; }
+  .editing-note{ font-size:11px; color: var(--gold); margin-bottom: -4px; }
 
-  .list-head{
-    display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 18px;
-  }
-  .list-head h2{
-    font-family:'Cormorant Garamond', serif; font-size:22px; color: var(--gold-soft); letter-spacing:1px;
-  }
-  .list-head .filter-clear{ font-size:12px; color: var(--gold); cursor:pointer; }
+  .status-table{ width:100%; border-collapse: collapse; font-size: 13px; }
+  .status-table th{ text-align:left; font-size:11px; color: var(--text-dim); letter-spacing:1px; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .status-table td{ padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .status-table tr.weekend-row{ background: rgba(201,162,75,0.035); }
+  .status-table tr.weekend-row td:first-child{ box-shadow: inset 3px 0 0 var(--gold); }
+  .status-table tr.group-row td{ color: var(--text-dim); font-size:12px; cursor:pointer; }
+  .status-table tr.group-row:hover td{ color: var(--gold-soft); }
+  .status-table tr.weekday-row td{ font-size:12px; opacity:0.85; }
+  .date-cell{ white-space:nowrap; }
+  .date-cell .wd{ color: var(--text-dim); font-size:11px; margin-left:4px; }
+  .date-cell.sat .wd{ color:#5f88b0; }
+  .date-cell.sun .wd{ color:#b5654f; }
+  .status-pill{ display:inline-flex; align-items:center; gap:6px; padding: 4px 10px; border-radius: 20px; font-size:12px; }
+  .status-pill.closed{ background: rgba(201,162,75,0.16); color: var(--gold-soft); border:1px solid rgba(201,162,75,0.4); }
+  .status-pill.open{ color: var(--open); }
+  .region-txt{ color: var(--text-dim); font-size:11px; margin-left:4px; }
+  .fold-icon{ display:inline-block; width:14px; }
 
-  .date-group{ margin-bottom: 18px; }
-  .date-group .date-label{
-    font-size: 12px; color: var(--gold); letter-spacing: 1.5px; margin-bottom: 8px;
-    padding-bottom: 6px; border-bottom: 1px solid var(--line);
-  }
-  .item{
-    display:flex; justify-content:space-between; align-items:flex-start;
-    background: var(--bg-card); border:1px solid var(--line); border-radius:3px;
-    padding: 14px 16px; margin-bottom: 8px;
-  }
-  .item .time{ color: var(--gold-soft); font-weight:600; font-size:14px; min-width:56px; }
-  .item .info{ flex:1; margin-left:14px; }
-  .item .info .name{ font-size:15px; font-weight:600; }
-  .item .info .meta{ font-size:12px; color: var(--text-dim); margin-top:3px; }
-  .item .actions{ display:flex; gap:8px; }
-  .item .actions button{
-    background:none; border:none; color: var(--text-dim); cursor:pointer; font-size:12px;
-  }
-  .item .actions button:hover{ color: var(--gold); }
-  .item .actions button.del:hover{ color: var(--danger); }
+  .status{ text-align:center; font-size:11px; color: var(--text-dim); margin-top: -8px; margin-bottom: 20px; }
+  .list-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 16px; }
+  .list-head h2{ font-family:'Cormorant Garamond', serif; font-size:22px; color: var(--gold-soft); letter-spacing:1px; }
 
-  .empty-state{
-    text-align:center; color: var(--text-dim); font-size:13px; padding: 30px 0;
+  .wait-item{
+    display:flex; justify-content:space-between; align-items:center;
+    background: var(--bg-card); border:1px solid var(--line); border-left: 3px solid var(--wait);
+    border-radius:3px; padding: 10px 14px; margin-bottom: 8px; font-size:13px;
   }
-  .status{ text-align:center; font-size:11px; color: var(--text-dim); margin-top: -10px; margin-bottom: 20px; }
+  .wait-item .w-date{ min-width:96px; color: var(--gold-soft); font-weight:600; }
+  .wait-item .w-info{ flex:1; margin-left:10px; }
+  .wait-item .w-info .w-region{ font-size:13px; }
+  .wait-item .w-info .w-memo{ font-size:11px; color: var(--text-dim); margin-top:2px; }
+  .wait-item .w-actions{ display:flex; gap:8px; }
+  .empty-state{ text-align:center; color: var(--text-dim); font-size:13px; padding: 20px 0; }
 </style>
 </head>
 <body>
@@ -169,7 +152,7 @@
   <header class="top">
     <div class="eyebrow">MOMENT WORKS</div>
     <h1>예약일정관리</h1>
-    <div class="sub">축의대 예약 및 예식 일정을 한눈에 확인하세요</div>
+    <div class="sub">축의대 예약 일정을 한눈에 확인하세요</div>
   </header>
 
   <div class="status" id="status">불러오는 중...</div>
@@ -180,90 +163,128 @@
       <div class="month-label" id="monthLabel"></div>
       <button class="nav-btn" id="nextBtn">›</button>
     </div>
+    <div class="legend">
+      <span><span class="swatch closed"></span> 예약마감</span>
+      <span><span class="swatch open"></span> 예약가능</span>
+      <span><span class="swatch wait"></span> 대기예약 있음</span>
+    </div>
     <div class="weekdays">
       <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
     </div>
     <div class="grid" id="calGrid"></div>
+  </div>
 
+  <div class="panel">
+    <div class="editing-note" id="editingNote" style="display:none;">기존 일정 수정 중</div>
     <div class="add-form">
       <div>
         <label>예식일자</label>
         <input type="date" id="f-date">
       </div>
       <div>
-        <label>예식시간</label>
-        <input type="time" id="f-time">
+        <label>시간대</label>
+        <div class="toggle-group">
+          <div class="toggle-btn active" id="btn-am" data-session="AM">오전</div>
+          <div class="toggle-btn" id="btn-pm" data-session="PM">오후</div>
+        </div>
       </div>
       <div>
-        <label>신랑 · 신부</label>
-        <input type="text" id="f-name" placeholder="예: 김민수 · 이서연">
+        <label>지역 / 예식장</label>
+        <input type="text" id="f-region" placeholder="예: 강남 · 더채플 앳 청담">
       </div>
       <div>
-        <label>예식장</label>
-        <input type="text" id="f-venue" placeholder="예: 더채플 앳 청담">
+        <label>예약구분</label>
+        <div class="toggle-group">
+          <div class="toggle-btn active" id="btn-confirmed" data-status="confirmed">확정마감</div>
+          <div class="toggle-btn" id="btn-waiting" data-status="waiting">대기예약</div>
+        </div>
       </div>
       <div class="full">
-        <label>메모</label>
-        <textarea id="f-memo" placeholder="인원, 준비물, 특이사항 등"></textarea>
+        <label>메모 / 연락처 (선택)</label>
+        <input type="text" id="f-memo" placeholder="예: 010-1234-5678, 신랑측 문의">
       </div>
-      <div class="full" style="display:flex; gap:10px; justify-content:flex-end;">
+      <div class="full form-actions">
+        <button class="btn btn-danger" id="deleteBtn" style="display:none;">이 일정 삭제</button>
         <button class="btn btn-ghost" id="cancelEditBtn" style="display:none;">취소</button>
-        <button class="btn btn-gold" id="saveBtn">일정 저장</button>
+        <button class="btn btn-gold" id="saveBtn">저장</button>
       </div>
     </div>
   </div>
 
   <div class="panel">
     <div class="list-head">
-      <h2>전체 일정 (날짜·시간순)</h2>
-      <div class="filter-clear" id="clearFilter" style="display:none;">필터 해제 ✕</div>
+      <h2>접수 현황</h2>
     </div>
-    <div id="listArea"></div>
+    <table class="status-table">
+      <thead>
+        <tr><th>날짜</th><th>오전</th><th>오후</th></tr>
+      </thead>
+      <tbody id="statusBody"></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <div class="list-head">
+      <h2>대기예약 리스트</h2>
+    </div>
+    <div id="waitList"></div>
   </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ▼▼▼ 여기 두 값만 본인 Supabase 프로젝트 값으로 교체하세요 ▼▼▼
 const SUPABASE_URL = 'https://jpqisppqbsqdlyjvkbic.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_J62N4rw8GVAzjF8rCv8ezA_CHbPh6Je';
-// ▲▲▲ 여기까지 ▲▲▲
-
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let schedules = [];
+let schedules = [];       // {id, date, session, region, status, memo}
 let currentMonth = new Date();
-let selectedDate = null;
+let selectedSession = 'AM';
+let selectedStatus = 'confirmed';
 let editingId = null;
+let expandedGroups = new Set();
 
-function fmtDateLabel(dateStr){
-  const d = new Date(dateStr + 'T00:00:00');
-  const days = ['일','월','화','수','목','금','토'];
-  return `${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+function confirmedOnly(){ return schedules.filter(s => s.status !== 'waiting'); }
+function waitingOnly(){ return schedules.filter(s => s.status === 'waiting'); }
+
+function buildLookup(){
+  const map = {};
+  confirmedOnly().forEach(s => {
+    if(!map[s.date]) map[s.date] = {};
+    map[s.date][s.session] = s;
+  });
+  return map;
+}
+function buildWaitLookup(){
+  const set = new Set();
+  waitingOnly().forEach(s => set.add(s.date));
+  return set;
 }
 
 async function loadSchedules(){
   document.getElementById('status').textContent = '불러오는 중...';
-  const { data, error } = await db
-    .from('schedules')
-    .select('*')
-    .order('date', { ascending: true })
-    .order('time', { ascending: true });
+  try{
+    const { data, error } = await db
+      .from('schedules')
+      .select('id, date, session, region, status, memo')
+      .order('date', { ascending: true });
 
-  if(error){
-    document.getElementById('status').textContent = '불러오기 실패: ' + error.message;
-    schedules = [];
-  } else {
+    if(error) throw error;
     schedules = data || [];
     document.getElementById('status').textContent = '어디서든 이 주소로 접속하면 같은 일정을 보고 저장합니다';
+  } catch(e){
+    const msg = (e && typeof e.message === 'string') ? e.message : '네트워크 오류가 발생했어요. 배포된 실제 주소에서 확인해주세요.';
+    document.getElementById('status').textContent = '불러오기 실패: ' + msg;
+    schedules = [];
   }
   render();
 }
 
 function render(){
   renderCalendar();
-  renderList();
+  renderStatusTable();
+  renderWaitList();
 }
 
 function renderCalendar(){
@@ -274,6 +295,8 @@ function renderCalendar(){
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month+1, 0).getDate();
   const todayStr = new Date().toISOString().slice(0,10);
+  const lookup = buildLookup();
+  const waitDates = buildWaitLookup();
 
   const grid = document.getElementById('calGrid');
   grid.innerHTML = '';
@@ -286,70 +309,242 @@ function renderCalendar(){
 
   for(let day=1; day<=daysInMonth; day++){
     const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const dow = new Date(year, month, day).getDay();
+    const isWeekend = (dow === 0 || dow === 6);
+    const dayData = lookup[dateStr] || {};
+    const isToday = dateStr === todayStr;
+    const hasWait = waitDates.has(dateStr);
+
     const cell = document.createElement('div');
-    cell.className = 'day-cell';
-    if(dateStr === todayStr) cell.classList.add('today');
-    if(dateStr === selectedDate) cell.classList.add('selected');
 
-    const dayItems = schedules.filter(s => s.date === dateStr);
-    cell.innerHTML = `<div class="num">${day}</div>` +
-      (dayItems.length ? `<div class="dot-row">${dayItems.slice(0,4).map(()=>'<div class="dot"></div>').join('')}</div>` : '');
-
-    cell.addEventListener('click', () => {
-      selectedDate = (selectedDate === dateStr) ? null : dateStr;
-      if(selectedDate) document.getElementById('f-date').value = selectedDate;
-      render();
-    });
+    if(isWeekend){
+      cell.className = 'day-cell weekend-cell ' + (dow===0?'sun':'sat') + (isToday?' today':'');
+      cell.innerHTML = `
+        <div class="num">${day}${hasWait ? ' <span style="color:var(--wait)">●</span>' : ''}</div>
+        <div class="session-bar ${dayData.AM ? 'closed':'open'}" data-date="${dateStr}" data-session="AM">
+          <div class="s-label">오전</div>
+          <div class="s-region">${dayData.AM ? escapeHtml(dayData.AM.region||'마감') : '가능'}</div>
+        </div>
+        <div class="session-bar ${dayData.PM ? 'closed':'open'}" data-date="${dateStr}" data-session="PM">
+          <div class="s-label">오후</div>
+          <div class="s-region">${dayData.PM ? escapeHtml(dayData.PM.region||'마감') : '가능'}</div>
+        </div>
+      `;
+      cell.querySelectorAll('.session-bar').forEach(bar => {
+        bar.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openSlot(bar.dataset.date, bar.dataset.session, dayData[bar.dataset.session]);
+        });
+      });
+    } else {
+      cell.className = 'day-cell weekday-cell' + (isToday?' today':'');
+      cell.innerHTML = `
+        <div class="num">${day}${hasWait ? ' <span style="color:var(--wait)">●</span>' : ''}</div>
+        <div class="mini-dots">
+          <div class="mini-dot ${dayData.AM?'closed':''}"></div>
+          <div class="mini-dot ${dayData.PM?'closed':''}"></div>
+        </div>
+      `;
+      cell.addEventListener('click', () => {
+        document.getElementById('f-date').value = dateStr;
+      });
+    }
     grid.appendChild(cell);
   }
 }
 
-function renderList(){
-  const listArea = document.getElementById('listArea');
-  const clearFilter = document.getElementById('clearFilter');
-  clearFilter.style.display = selectedDate ? 'block' : 'none';
+function openSlot(dateStr, session, existing){
+  document.getElementById('f-date').value = dateStr;
+  setSession(session);
+  setStatus('confirmed');
+  if(existing){
+    editingId = existing.id;
+    document.getElementById('f-region').value = existing.region || '';
+    document.getElementById('f-memo').value = existing.memo || '';
+    document.getElementById('editingNote').style.display = 'block';
+    document.getElementById('deleteBtn').style.display = 'inline-block';
+    document.getElementById('cancelEditBtn').style.display = 'inline-block';
+    document.getElementById('saveBtn').textContent = '수정 완료';
+  } else {
+    resetFormKeepDate(dateStr, session);
+  }
+  window.scrollTo({top: document.querySelectorAll('.panel')[1].offsetTop - 20, behavior:'smooth'});
+}
 
-  let data = [...schedules];
-  if(selectedDate) data = data.filter(s => s.date === selectedDate);
-  data.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+function setSession(session){
+  selectedSession = session;
+  document.getElementById('btn-am').classList.toggle('active', session==='AM');
+  document.getElementById('btn-pm').classList.toggle('active', session==='PM');
+}
+function setStatus(status){
+  selectedStatus = status;
+  document.getElementById('btn-confirmed').classList.toggle('active', status==='confirmed');
+  document.getElementById('btn-waiting').classList.toggle('active', status==='waiting');
+  document.getElementById('btn-waiting').classList.toggle('wait-active', status==='waiting');
+}
 
-  if(data.length === 0){
-    listArea.innerHTML = `<div class="empty-state">등록된 일정이 없습니다.</div>`;
+function resetFormKeepDate(dateStr, session){
+  editingId = null;
+  document.getElementById('f-date').value = dateStr || '';
+  setSession(session || 'AM');
+  setStatus('confirmed');
+  document.getElementById('f-region').value = '';
+  document.getElementById('f-memo').value = '';
+  document.getElementById('editingNote').style.display = 'none';
+  document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+  document.getElementById('saveBtn').textContent = '저장';
+}
+function resetForm(){ resetFormKeepDate('', 'AM'); }
+
+function renderStatusTable(){
+  const wdNames = ['일','월','화','수','목','금','토'];
+  const lookup = buildLookup();
+  const tbody = document.getElementById('statusBody');
+  tbody.innerHTML = '';
+
+  for(let m=0; m<3; m++){
+    const baseDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth()+m, 1);
+    const year = baseDate.getFullYear();
+    const month = baseDate.getMonth();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+
+    const monthRow = document.createElement('tr');
+    monthRow.className = 'month-row';
+    monthRow.innerHTML = `<td colspan="3" style="padding-top:${m>0?'18px':'8px'}; font-family:'Cormorant Garamond',serif; font-size:16px; color:var(--gold-soft); border-bottom:1px solid var(--line);">${year}년 ${month+1}월</td>`;
+    tbody.appendChild(monthRow);
+
+    let i = 1;
+    while(i <= daysInMonth){
+      const dow = new Date(year, month, i).getDay();
+      const isWeekend = (dow===0 || dow===6);
+
+      if(isWeekend){
+        appendDayRow(tbody, year, month, i, dow, lookup, wdNames, false);
+        i++;
+        continue;
+      }
+
+      const groupStart = i;
+      let j = i;
+      while(j <= daysInMonth && !(new Date(year,month,j).getDay()===0 || new Date(year,month,j).getDay()===6)){
+        j++;
+      }
+      const groupEnd = j - 1;
+      const groupKey = `${year}-${month}-${groupStart}`;
+      let closedCount = 0;
+      for(let d=groupStart; d<=groupEnd; d++){
+        const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const dd = lookup[ds] || {};
+        if(dd.AM) closedCount++;
+        if(dd.PM) closedCount++;
+      }
+
+      if(expandedGroups.has(groupKey)){
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'group-row';
+        groupRow.innerHTML = `<td colspan="3"><span class="fold-icon">▾</span> 평일 ${month+1}/${groupStart} ~ ${month+1}/${groupEnd} 접기</td>`;
+        groupRow.addEventListener('click', () => { expandedGroups.delete(groupKey); renderStatusTable(); });
+        tbody.appendChild(groupRow);
+        for(let d=groupStart; d<=groupEnd; d++){
+          appendDayRow(tbody, year, month, d, new Date(year,month,d).getDay(), lookup, wdNames, true);
+        }
+      } else {
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'group-row';
+        groupRow.innerHTML = `<td colspan="3"><span class="fold-icon">▸</span> 평일 ${month+1}/${groupStart} ~ ${month+1}/${groupEnd} (${groupEnd-groupStart+1}일)${closedCount>0 ? ` · 마감 ${closedCount}건` : ''} 펼치기</td>`;
+        groupRow.addEventListener('click', () => { expandedGroups.add(groupKey); renderStatusTable(); });
+        tbody.appendChild(groupRow);
+      }
+      i = j;
+    }
+  }
+}
+
+function appendDayRow(tbody, year, month, day, dow, lookup, wdNames, compact){
+  const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  const dayData = lookup[dateStr] || {};
+  const isWeekend = (dow===0 || dow===6);
+  const tr = document.createElement('tr');
+  if(isWeekend) tr.className = 'weekend-row';
+  if(compact) tr.className += ' weekday-row';
+  const dateCellClass = dow===0 ? 'sun' : (dow===6 ? 'sat' : '');
+  tr.innerHTML = `
+    <td class="date-cell ${dateCellClass}">${month+1}/${day}<span class="wd">(${wdNames[dow]})</span></td>
+    <td>${sessionCellHtml(dayData.AM)}</td>
+    <td>${sessionCellHtml(dayData.PM)}</td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function sessionCellHtml(entry){
+  if(entry){
+    return `<span class="status-pill closed">예약마감</span><span class="region-txt">${escapeHtml(entry.region||'')}</span>`;
+  }
+  return `<span class="status-pill open">접수가능</span>`;
+}
+
+function renderWaitList(){
+  const container = document.getElementById('waitList');
+  const list = waitingOnly().slice().sort((a,b) => (a.date+a.session).localeCompare(b.date+b.session));
+  if(list.length === 0){
+    container.innerHTML = `<div class="empty-state">대기예약이 없습니다.</div>`;
     return;
   }
-
-  const groups = {};
-  data.forEach(s => {
-    if(!groups[s.date]) groups[s.date] = [];
-    groups[s.date].push(s);
+  container.innerHTML = '';
+  list.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'wait-item';
+    el.innerHTML = `
+      <div class="w-date">${item.date} · ${item.session==='AM'?'오전':'오후'}</div>
+      <div class="w-info">
+        <div class="w-region">${escapeHtml(item.region || '(지역 미입력)')}</div>
+        ${item.memo ? `<div class="w-memo">${escapeHtml(item.memo)}</div>` : ''}
+      </div>
+      <div class="w-actions">
+        <button class="btn btn-gold btn-small confirm-btn">확정 전환</button>
+        <button class="btn btn-ghost btn-small edit-btn">수정</button>
+        <button class="btn btn-danger btn-small del-btn">삭제</button>
+      </div>
+    `;
+    el.querySelector('.confirm-btn').addEventListener('click', () => confirmWaiting(item));
+    el.querySelector('.edit-btn').addEventListener('click', () => editWaiting(item));
+    el.querySelector('.del-btn').addEventListener('click', () => deleteEntry(item.id));
+    container.appendChild(el);
   });
+}
 
-  listArea.innerHTML = '';
-  Object.keys(groups).sort().forEach(dateStr => {
-    const groupDiv = document.createElement('div');
-    groupDiv.className = 'date-group';
-    groupDiv.innerHTML = `<div class="date-label">${fmtDateLabel(dateStr)}</div>`;
+function editWaiting(item){
+  editingId = item.id;
+  document.getElementById('f-date').value = item.date;
+  setSession(item.session);
+  setStatus('waiting');
+  document.getElementById('f-region').value = item.region || '';
+  document.getElementById('f-memo').value = item.memo || '';
+  document.getElementById('editingNote').style.display = 'block';
+  document.getElementById('deleteBtn').style.display = 'inline-block';
+  document.getElementById('cancelEditBtn').style.display = 'inline-block';
+  document.getElementById('saveBtn').textContent = '수정 완료';
+  window.scrollTo({top: document.querySelectorAll('.panel')[1].offsetTop - 20, behavior:'smooth'});
+}
 
-    groups[dateStr].forEach(item => {
-      const el = document.createElement('div');
-      el.className = 'item';
-      el.innerHTML = `
-        <div class="time">${item.time || '--:--'}</div>
-        <div class="info">
-          <div class="name">${escapeHtml(item.name || '(이름 미입력)')}</div>
-          <div class="meta">${escapeHtml(item.venue || '')}${item.memo ? ' · ' + escapeHtml(item.memo) : ''}</div>
-        </div>
-        <div class="actions">
-          <button class="edit">수정</button>
-          <button class="del">삭제</button>
-        </div>
-      `;
-      el.querySelector('.edit').addEventListener('click', () => startEdit(item.id));
-      el.querySelector('.del').addEventListener('click', () => deleteItem(item.id));
-      groupDiv.appendChild(el);
-    });
-    listArea.appendChild(groupDiv);
-  });
+async function confirmWaiting(item){
+  const conflict = confirmedOnly().find(s => s.date === item.date && s.session === item.session);
+  if(conflict){
+    alert('이미 같은 날짜/시간대에 확정된 예약이 있어요. 먼저 기존 확정 건을 확인해주세요.');
+    return;
+  }
+  const { error } = await db.from('schedules').update({ status: 'confirmed' }).eq('id', item.id);
+  if(error){ alert('전환 실패: ' + error.message); return; }
+  await loadSchedules();
+}
+
+async function deleteEntry(id){
+  if(!confirm('이 항목을 삭제할까요?')) return;
+  const { error } = await db.from('schedules').delete().eq('id', id);
+  if(error){ alert('삭제 실패: ' + error.message); return; }
+  if(editingId === id) resetForm();
+  await loadSchedules();
 }
 
 function escapeHtml(str){
@@ -358,61 +553,43 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-function startEdit(id){
-  const item = schedules.find(s => s.id === id);
-  if(!item) return;
-  editingId = id;
-  document.getElementById('f-date').value = item.date;
-  document.getElementById('f-time').value = item.time;
-  document.getElementById('f-name').value = item.name;
-  document.getElementById('f-venue').value = item.venue;
-  document.getElementById('f-memo').value = item.memo;
-  document.getElementById('saveBtn').textContent = '수정 완료';
-  document.getElementById('cancelEditBtn').style.display = 'inline-block';
-  window.scrollTo({top: document.querySelector('.panel').offsetTop - 20, behavior:'smooth'});
-}
-
-function resetForm(){
-  editingId = null;
-  document.getElementById('f-date').value = '';
-  document.getElementById('f-time').value = '';
-  document.getElementById('f-name').value = '';
-  document.getElementById('f-venue').value = '';
-  document.getElementById('f-memo').value = '';
-  document.getElementById('saveBtn').textContent = '일정 저장';
-  document.getElementById('cancelEditBtn').style.display = 'none';
-}
-
-async function deleteItem(id){
-  if(!confirm('이 일정을 삭제할까요?')) return;
-  const { error } = await db.from('schedules').delete().eq('id', id);
-  if(error){ alert('삭제 실패: ' + error.message); return; }
-  await loadSchedules();
-}
+document.getElementById('btn-am').addEventListener('click', () => setSession('AM'));
+document.getElementById('btn-pm').addEventListener('click', () => setSession('PM'));
+document.getElementById('btn-confirmed').addEventListener('click', () => setStatus('confirmed'));
+document.getElementById('btn-waiting').addEventListener('click', () => setStatus('waiting'));
+document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+document.getElementById('deleteBtn').addEventListener('click', async () => {
+  if(!editingId) return;
+  await deleteEntry(editingId);
+});
 
 document.getElementById('saveBtn').addEventListener('click', async () => {
   const date = document.getElementById('f-date').value;
-  const time = document.getElementById('f-time').value;
-  const name = document.getElementById('f-name').value.trim();
-  const venue = document.getElementById('f-venue').value.trim();
+  const region = document.getElementById('f-region').value.trim();
   const memo = document.getElementById('f-memo').value.trim();
+  const session = selectedSession;
+  const status = selectedStatus;
 
   if(!date){ alert('예식일자를 입력해주세요.'); return; }
 
   let error;
   if(editingId){
-    ({ error } = await db.from('schedules').update({date, time, name, venue, memo}).eq('id', editingId));
+    ({ error } = await db.from('schedules').update({ date, session, region, status, memo }).eq('id', editingId));
+  } else if(status === 'confirmed'){
+    const existing = confirmedOnly().find(s => s.date === date && s.session === session);
+    if(existing){
+      ({ error } = await db.from('schedules').update({ region, memo }).eq('id', existing.id));
+    } else {
+      ({ error } = await db.from('schedules').insert({ date, session, region, status, memo }));
+    }
   } else {
-    ({ error } = await db.from('schedules').insert({date, time, name, venue, memo}));
+    ({ error } = await db.from('schedules').insert({ date, session, region, status, memo }));
   }
   if(error){ alert('저장 실패: ' + error.message); return; }
 
   resetForm();
   await loadSchedules();
 });
-
-document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
-document.getElementById('clearFilter').addEventListener('click', () => { selectedDate = null; render(); });
 
 document.getElementById('prevBtn').addEventListener('click', () => {
   currentMonth.setMonth(currentMonth.getMonth() - 1);
